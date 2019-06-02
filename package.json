@@ -8,6 +8,8 @@
 	"repository": "https://github.com/burninggarden/network-mapper",
 	"main": "./dist/src/index.js",
 	"dependencies": {
+		"@burninggarden/enums": "0.0.3",
+		"@burninggarden/environment-mocker": "0.0.4",
 		"@types/node": "10.9.4",
 		"tap": "^12.6.1",
 		"typescript": "3.2.1"
