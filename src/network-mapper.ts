@@ -1,4 +1,5 @@
 import OS            from 'os';
+import Config        from '@burninggarden/config';
 import AddressFamily from 'enums/address-family';
 
 const LOCALHOST = 'localhost';
@@ -17,6 +18,10 @@ class NetworkMapper {
 	}
 
 	private determineHostname(): string {
+		if (Config.isTest()) {
+			return this.getLocalhostAlias();
+		}
+
 		const interfaces = OS.networkInterfaces();
 		const resolvedAddresses = [];
 
