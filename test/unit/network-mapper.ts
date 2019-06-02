@@ -18,8 +18,8 @@ Tap.test('.getHostname() returns expected hostname in development environment', 
 
 		let expectedInterface = interfaces.find(networkInterface => {
 			return (
-				   networkInterface.internal === false
-				&& networkInterface.family   === AddressFamily.IPV4
+				networkInterface.internal === false &&
+				networkInterface.family   === AddressFamily.IPV4
 			);
 		});
 
@@ -49,8 +49,8 @@ Tap.test('.getHostname() returns expected hostname in production environment', t
 
 		let expectedInterface = interfaces.find(networkInterface => {
 			return (
-				   networkInterface.internal === false
-				&& networkInterface.family   === AddressFamily.IPV4
+				networkInterface.internal === false &&
+				networkInterface.family   === AddressFamily.IPV4
 			);
 		});
 
