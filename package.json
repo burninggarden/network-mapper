@@ -18,8 +18,10 @@
 		"eslint": "^5.15.3"
 	},
 	"scripts": {
-		"install": "./bin/install",
-		"test":    "./bin/test",
-		"lint":    "./bin/lint"
+		"install":     "./bin/install",
+		"test":        "./bin/test",
+		"lint":        "./bin/lint",
+		"preversion":  "./bin/preversion",
+		"postversion": "./bin/postversion"
 	}
 }
