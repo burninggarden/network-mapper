@@ -2,6 +2,7 @@ import OS             from 'os';
 import Config         from '@burninggarden/config';
 import AddressFamily  from 'enums/address-family';
 import {ServerType}   from '@burninggarden/enums';
+import PortAllocator  from '@burninggarden/port-allocator';
 
 const LOCALHOST = 'localhost';
 const LOCALHOST_IPV6_PREFIX = '::ffff:';
@@ -40,8 +41,19 @@ class NetworkMapper {
 		return this.hostname;
 	}
 
-	public createLocalMapping(mapping: NetworkMapping): this {
-		return this.setCachedMappingForServerType(mapping, mapping.serverType);
+	public createLocalMappingForServerType(serverType: ServerType): NetworkMapping {
+		const portAllocation = (new PortAllocator()).createPortAllocation();
+		const hostname = this.determineHostname();
+
+		const mapping = {
+			serverType,
+			hostname,
+			...portAllocation,
+		};
+
+		this.setCachedMappingForServerType(mapping, mapping.serverType);
+
+		return mapping;
 	}
 
 	public getMappingForServerType(

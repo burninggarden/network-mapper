@@ -80,18 +80,36 @@ Tap.test('.getHostname() returns expected hostname in test environment', test =>
 	});
 });
 
-Tap.test('.createLocalMapping()', suite => {
-	suite.test('accepts expected values and returns the network mapper instance', test => {
-		const networkMapper = new NetworkMapper();
+Tap.test('.createLocalMappingForServerType()', suite => {
+	await suite.test('returns a mapping with the expected hostname', async test => {
+		const mapping = (new NetworkMapper())
+			.createLocalMappingForServerType(ServerType.GAME);
 
-		const result = networkMapper.createLocalMapping({
-			serverType: ServerType.GAME,
-			hostname:   'localhost',
-			httpPort:   1234,
-			tcpPort:    5678
-		});
+		test.equal(mapping.hostname, 'localhost');
+		test.end();
+	});
 
-		test.equal(result, networkMapper);
+	await suite.test('returns a mapping with an open http port', async test => {
+		const mapping = (new NetworkMapper())
+			.createLocalMappingForServerType(ServerType.GAME);
+
+		const portChecker = new PortChecker(mapping.httpPort);
+
+		const portInUse = await portchecker.isPortInUse();
+
+		test.notOk(portInUse);
+		test.end();
+	});
+
+	await suite.test('returns a mapping with an open tcp port', async test => {
+		const mapping = (new NetworkMapper())
+			.createLocalMappingForServerType(ServerType.GAME);
+
+		const portChecker = new PortChecker(mapping.tcpPort);
+
+		const portInUse = await portchecker.isPortInUse();
+
+		test.notOk(portInUse);
 		test.end();
 	});
 
