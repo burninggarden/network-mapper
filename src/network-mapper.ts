@@ -3,16 +3,10 @@ import Config         from '@burninggarden/config';
 import AddressFamily  from 'enums/address-family';
 import {ServerType}   from '@burninggarden/enums';
 import PortAllocator  from '@burninggarden/port-allocator';
+import NetworkMapping from 'interfaces/network-mapping';
 
 const LOCALHOST = 'localhost';
 const LOCALHOST_IPV6_PREFIX = '::ffff:';
-
-interface NetworkMapping {
-	serverType : ServerType;
-	hostname   : string;
-	httpPort   : number;
-	tcpPort    : number;
-}
 
 type MappingCache = {
 	[key in ServerType]: NetworkMapping | undefined;
