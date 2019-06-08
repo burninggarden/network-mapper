@@ -2,6 +2,7 @@ import OS                from 'os';
 import Tap               from 'tap';
 import AddressFamily     from 'enums/address-family';
 import NetworkMapper     from 'network-mapper';
+import PortChecker       from '@burninggarden/port-checker';
 import EnvironmentMocker from '@burninggarden/environment-mocker';
 import {
 	ServerType,
@@ -80,12 +81,12 @@ Tap.test('.getHostname() returns expected hostname in test environment', test =>
 	});
 });
 
-Tap.test('.createLocalMappingForServerType()', suite => {
+Tap.test('.createLocalMappingForServerType()', async suite => {
 	await suite.test('returns a mapping with the expected hostname', async test => {
 		const mapping = (new NetworkMapper())
 			.createLocalMappingForServerType(ServerType.GAME);
 
-		test.equal(mapping.hostname, 'localhost');
+		test.equal(mapping.hostname, '127.0.0.1');
 		test.end();
 	});
 
@@ -95,7 +96,7 @@ Tap.test('.createLocalMappingForServerType()', suite => {
 
 		const portChecker = new PortChecker(mapping.httpPort);
 
-		const portInUse = await portchecker.isPortInUse();
+		const portInUse = await portChecker.isPortInUse();
 
 		test.notOk(portInUse);
 		test.end();
@@ -107,7 +108,7 @@ Tap.test('.createLocalMappingForServerType()', suite => {
 
 		const portChecker = new PortChecker(mapping.tcpPort);
 
-		const portInUse = await portchecker.isPortInUse();
+		const portInUse = await portChecker.isPortInUse();
 
 		test.notOk(portInUse);
 		test.end();
@@ -128,14 +129,9 @@ Tap.test('.getMappingForServerType()', suite => {
 	suite.test('returns expected mapping if one is set', test => {
 		const networkMapper = new NetworkMapper();
 
-		const originalMapping = {
-			serverType: ServerType.GAME,
-			hostname:   'localhost',
-			httpPort:   1234,
-			tcpPort:    5678
-		};
-
-		networkMapper.createLocalMapping(originalMapping);
+		const originalMapping = networkMapper.createLocalMappingForServerType(
+			ServerType.GAME
+		);
 
 		const retrievedMapping = networkMapper.getMappingForServerType(
 			ServerType.GAME
@@ -149,12 +145,7 @@ Tap.test('.getMappingForServerType()', suite => {
 		const mapperOne = new NetworkMapper();
 		const mapperTwo = new NetworkMapper();
 
-		mapperOne.createLocalMapping({
-			serverType: ServerType.GAME,
-			hostname:   'localhost',
-			httpPort:   1234,
-			tcpPort:    5678
-		});
+		mapperOne.createLocalMappingForServerType(ServerType.GAME);
 
 		const retrievedMapping = mapperTwo.getMappingForServerType(
 			ServerType.GAME
@@ -164,31 +155,20 @@ Tap.test('.getMappingForServerType()', suite => {
 		test.end();
 	});
 
-	suite.test('overwrites previous mappings if the same server type is supplied', test => {
+	suite.test('returns latest mapping if mapping for server type is overwritten', test => {
 		const mapper = new NetworkMapper();
 
-		const mappingOne = {
-			serverType: ServerType.GAME,
-			hostname:   'localhost',
-			httpPort:   1234,
-			tcpPort:    5678
-		};
+		mapper.createLocalMappingForServerType(ServerType.GAME);
 
-		const mappingTwo = {
-			serverType: ServerType.GAME,
-			hostname:   'burninggarden.com',
-			httpPort:   4321,
-			tcpPort:    8765
-		};
-
-		mapper.createLocalMapping(mappingOne);
-		mapper.createLocalMapping(mappingTwo);
+		const secondMapping = mapper.createLocalMappingForServerType(
+			ServerType.GAME
+		);
 
 		const retrievedMapping = mapper.getMappingForServerType(
 			ServerType.GAME
 		);
 
-		test.equal(retrievedMapping, mappingTwo);
+		test.equal(retrievedMapping, secondMapping);
 		test.end();
 	});
 
