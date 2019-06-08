@@ -1,13 +1,36 @@
-import OS            from 'os';
-import Config        from '@burninggarden/config';
-import AddressFamily from 'enums/address-family';
+import OS             from 'os';
+import Config         from '@burninggarden/config';
+import AddressFamily  from 'enums/address-family';
+import {ServerType}   from '@burninggarden/enums';
 
 const LOCALHOST = 'localhost';
 const LOCALHOST_IPV6_PREFIX = '::ffff:';
 
+interface NetworkMapping {
+	serverType : ServerType;
+	hostname   : string;
+	httpPort   : number;
+	tcpPort    : number;
+}
+
+type MappingCache = {
+	[key in ServerType]: NetworkMapping | undefined;
+}
+
 class NetworkMapper {
 
-	private hostname: string;
+	private static cachedInstance : NetworkMapper;
+
+	private hostname       : string;
+	private cachedMappings : MappingCache;
+
+	public static getInstance(): NetworkMapper {
+		if (!this.cachedInstance) {
+			this.cachedInstance = new this();
+		}
+
+		return this.cachedInstance;
+	}
 
 	public getHostname(): string {
 		if (!this.hostname) {
@@ -15,6 +38,38 @@ class NetworkMapper {
 		}
 
 		return this.hostname;
+	}
+
+	public createLocalMapping(mapping: NetworkMapping): this {
+		return this.setCachedMappingForServerType(mapping, mapping.serverType);
+	}
+
+	public getMappingForServerType(
+		serverType: ServerType
+	): NetworkMapping | undefined {
+		return this.getCachedMappings()[serverType];
+	}
+
+	private setCachedMappingForServerType(
+		mapping: NetworkMapping,
+		serverType: ServerType
+	): this {
+		this.getCachedMappings()[serverType] = mapping;
+		return this;
+	}
+
+	private getCachedMappings(): MappingCache {
+		if (!this.cachedMappings) {
+			this.cachedMappings = {
+				[ServerType.API]    : undefined,
+				[ServerType.ASSETS] : undefined,
+				[ServerType.LOGGER] : undefined,
+				[ServerType.GAME]   : undefined,
+				[ServerType.PROXY]  : undefined
+			};
+		}
+
+		return this.cachedMappings;
 	}
 
 	private determineHostname(): string {
