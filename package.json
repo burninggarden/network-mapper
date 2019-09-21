@@ -1,7 +1,7 @@
 {
 	"name": "@burninggarden/network-mapper",
 	"description": "Network discovery and binding utility",
-	"version": "0.0.9",
+	"version": "0.0.10",
 	"private": false,
 	"author": "Burning Garden",
 	"homepage": "https://burninggarden.com",
