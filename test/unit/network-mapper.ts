@@ -1,8 +1,8 @@
 import OS                from 'os';
 import Tap               from 'tap';
+import PortChecker       from '@burninggarden/port-checker';
 import AddressFamily     from 'enums/address-family';
 import NetworkMapper     from 'network-mapper';
-import PortChecker       from '@burninggarden/port-checker';
 import EnvironmentMocker from '@burninggarden/environment-mocker';
 import {
 	ServerType,
@@ -158,9 +158,11 @@ Tap.test('.getMappingForServerType()', suite => {
 	suite.test('returns latest mapping if mapping for server type is overwritten', test => {
 		const mapper = new NetworkMapper();
 
-		mapper.createLocalMappingForServerType(ServerType.GAME);
+		const mappingOne = mapper.createLocalMappingForServerType(
+			ServerType.GAME
+		);
 
-		const secondMapping = mapper.createLocalMappingForServerType(
+		const mappingTwo = mapper.createLocalMappingForServerType(
 			ServerType.GAME
 		);
 
@@ -168,7 +170,8 @@ Tap.test('.getMappingForServerType()', suite => {
 			ServerType.GAME
 		);
 
-		test.equal(retrievedMapping, secondMapping);
+		test.notEqual(retrievedMapping, mappingOne);
+		test.equal(retrievedMapping, mappingTwo);
 		test.end();
 	});
 

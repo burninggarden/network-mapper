@@ -71,7 +71,8 @@ class NetworkMapper {
 				[ServerType.ASSETS] : undefined,
 				[ServerType.LOGGER] : undefined,
 				[ServerType.GAME]   : undefined,
-				[ServerType.PROXY]  : undefined
+				[ServerType.PROXY]  : undefined,
+				[ServerType.PUBSUB] : undefined
 			};
 		}
 
