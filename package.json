@@ -14,7 +14,7 @@
 		"@burninggarden/port-allocator": "0.0.4",
 		"@burninggarden/port-checker": "0.0.2",
 		"@types/node": "10.9.4",
-		"tap": "^12.6.1",
+		"tap": "^12.7.0",
 		"typescript": "3.2.1"
 	},
 	"devDependencies": {
